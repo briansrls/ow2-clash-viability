@@ -83,41 +83,58 @@ the attacker with a longer travel distance.
 
 \section{Diagram of the Spawn/Objective Layout}
 \begin{figure}[!ht]
-\noindent\hspace*{-1in}%
-\resizebox{0.9\paperwidth}{!}{%
-\begin{tikzpicture}[node distance=2cm, ->, >=stealth, semithick]
+\centering
+\noindent\hspace*{-.3in}%
+\resizebox{0.8\paperwidth}{!}{%
+\begin{tikzpicture}[->, >=stealth, node distance=2cm, semithick, every node/.style={align=center}]
 
-    % Define nodes
-    \node (Aspawn) [draw, rectangle, minimum width=1.3cm, align=center] {Team A\\Spawn};
-    \node (Apoint) [draw, circle, right of=Aspawn, xshift=2.2cm] {A};
-    \node (Bpoint) [draw, circle, right of=Apoint, xshift=1.6cm] {B};
-    \node (Cpoint) [draw, circle, right of=Bpoint, xshift=1.6cm] {C};
-    \node (Dpoint) [draw, circle, right of=Cpoint, xshift=1.6cm] {D};
-    \node (Epoint) [draw, circle, right of=Dpoint, xshift=1.6cm] {E};
-    \node (Bspawn) [draw, rectangle, minimum width=1.3cm, align=center, right of=Epoint, xshift=2.2cm] {Team B\\Spawn};
+% Objective nodes
+\node (A) [draw, circle, minimum size=1.2cm] {A};
+\node (B) [draw, circle, right=2cm of A, minimum size=1.2cm] {B};
+\node (C) [draw, circle, right=2cm of B, minimum size=1.2cm] {C};
+\node (D) [draw, circle, right=2cm of C, minimum size=1.2cm] {D};
+\node (E) [draw, circle, right=2cm of D, minimum size=1.2cm] {E};
 
-    % Straight connections for the 'linear' look
-    \draw[->] (Aspawn) -- (Apoint);
-    \draw[->] (Apoint) -- (Bpoint);
-    \draw[->] (Bpoint) -- (Cpoint);
-    \draw[->] (Cpoint) -- (Dpoint);
-    \draw[->] (Dpoint) -- (Epoint);
-    \draw[->] (Epoint) -- (Bspawn);
+% Spawns
+\node (SpawnA) [draw, rectangle, above=2.5cm of C, minimum width=1.5cm] {Team A\\Spawn (after 3 caps)};
+\node (SpawnB) [draw, rectangle, right=2.5cm of E, minimum width=1.5cm] {Team B\\Spawn};
 
-    % Larger bends and position tweaks for clarity
-    \draw[->, bend left=25] (Apoint.north east) 
-        to node[pos=0.5, above, yshift=4pt, align=center]{\small Team A pushes this way}
-        (Epoint.north west);
+% Arrows showing push direction
+\draw[->, thick] (A) -- (B);
+\draw[->, thick] (B) -- (C);
+\draw[->, thick] (C) -- (D);
+\draw[->, thick] (D) -- (E);
 
-    \draw[->, bend right=25] (Epoint.south west) 
-        to node[pos=0.5, below, yshift=-4pt, align=center]{\small Team B pushes this way}
-        (Apoint.south east);
+% Direction annotations
+\node[above=0.5cm of B] {\small Team A push direction →};
+\node[above=0.5cm of D] {\small ← Team B push direction};
+
+% Highlight tie-state at 4–4
+\node[below=1.2cm of C, text=blue] {\textbf{Tied score: 4–4 (next capture wins)}};
+
+% Role markers
+\node[below=.4cm of E, text=red] {\small Team B defending final point (spawn advantage)};
+\node[below=1.2cm of D, text=gray] {\small};
+
+% Dashed arrows showing spawn flow
+\draw[red, dashed, thick] (SpawnB.west) to[out=160,in=20] node[above, yshift=10pt] {\small Team B spawns close to E (defender)} (E.east);
+\draw[gray, dashed, thick] (SpawnA.south) to[out=-90,in=90] node[right, xshift=3pt] {\small} (C.north);
+
+% Callout
+\node[below=2.3cm of C, text=black] {
+    \begin{minipage}{0.8\paperwidth}
+    \centering
+    \small \textit{Even when tied 4–4, spawn logic favors Team B as the ``defender'' due to early progress. Team A's spawn moves up, but still leaves them at a structural disadvantage.}
+    \end{minipage}
+};
 
 \end{tikzpicture}
-}%
-\caption{Linear layout of Clash objectives and spawns,}
+}
+\caption{Spawn flow in a 4–4 tie scenario. Team A’s spawn moves forward, but Team B retains final-point advantage due to fixed role logic.}
 \label{fig:clash-layout}
 \end{figure}
+
+
 
 As shown in Figure \ref{fig:clash-layout}, Team A is associated with point A 
 and Team B with point E. Once the game designates who is defending or attacking 
